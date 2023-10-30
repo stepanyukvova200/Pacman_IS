@@ -12,7 +12,7 @@ public class GhostChase : GhostBehavior
         Node node = other.GetComponent<Node>();
 
         // Do nothing while the ghost is frightened
-        if (node != null && enabled && !ghost.frightened.enabled)
+        if (node != null && node.isArtificial == false && enabled && !ghost.frightened.enabled)
         {
             Vector2 direction = Vector2.zero;
             float minDistance = float.MaxValue;

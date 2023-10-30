@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance => FindObjectOfType<GameManager>();
+    
     public Ghost[] ghosts;
     public Pacman pacman;
     public Transform pellets;

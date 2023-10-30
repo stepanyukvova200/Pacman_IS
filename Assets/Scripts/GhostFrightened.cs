@@ -70,7 +70,7 @@ public class GhostFrightened : GhostBehavior
     {
         Node node = other.GetComponent<Node>();
 
-        if (node != null && enabled)
+        if (node != null && node.isArtificial == false && enabled)
         {
             Vector2 direction = Vector2.zero;
             float maxDistance = float.MinValue;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +7,14 @@ public class Node : MonoBehaviour
     public LayerMask obstacleLayer;
     public List<Vector2> availableDirections { get; private set; }
 
+    public bool isArtificial = false;
+    
     private void Start()
+    {
+        UpdateAvailableDirections();
+    }
+
+    public void UpdateAvailableDirections()
     {
         availableDirections = new List<Vector2>();
 
@@ -16,6 +24,15 @@ public class Node : MonoBehaviour
         CheckAvailableDirection(Vector2.down);
         CheckAvailableDirection(Vector2.left);
         CheckAvailableDirection(Vector2.right);
+    }
+
+    private void OnDrawGizmos()
+    {
+        foreach (var dir in availableDirections)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + (Vector3)dir);
+        }
     }
 
     private void CheckAvailableDirection(Vector2 direction)
