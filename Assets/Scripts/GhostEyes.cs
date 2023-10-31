@@ -8,8 +8,8 @@ public class GhostEyes : MonoBehaviour
     public Sprite left;
     public Sprite right;
 
-    public SpriteRenderer spriteRenderer { get; private set; }
-    public Movement movement { get; private set; }
+    private SpriteRenderer spriteRenderer;
+    private Movement movement;
 
     private void Awake()
     {
@@ -19,18 +19,23 @@ public class GhostEyes : MonoBehaviour
 
     private void Update()
     {
-        if (movement.direction == Vector2.up) {
+        Vector2 direction = movement.direction;
+        
+        if (direction == Vector2.up)
+        {
             spriteRenderer.sprite = up;
         }
-        else if (movement.direction == Vector2.down) {
+        else if (direction == Vector2.down)
+        {
             spriteRenderer.sprite = down;
         }
-        else if (movement.direction == Vector2.left) {
+        else if (direction == Vector2.left)
+        {
             spriteRenderer.sprite = left;
         }
-        else if (movement.direction == Vector2.right) {
+        else if (direction == Vector2.right)
+        {
             spriteRenderer.sprite = right;
         }
     }
-
 }

@@ -21,8 +21,6 @@ public class Node : MonoBehaviour
     {
         availableDirections = new List<Vector2>();
 
-        // We determine if the direction is available by box casting to see if
-        // we hit a wall. The direction is added to list if available.
         CheckAvailableDirection(Vector2.up);
         CheckAvailableDirection(Vector2.down);
         CheckAvailableDirection(Vector2.left);

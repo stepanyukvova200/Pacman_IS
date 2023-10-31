@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class PowerPellet : Pellet
+public class PowerFruit : Fruit
 {
     public float duration = 8f;
 
     protected override void Eat()
     {
-        FindObjectOfType<GameManager>().PowerPelletEaten(this);
+        FindObjectOfType<GameManager>().PowerFruitEaten(this);
     }
 
 }

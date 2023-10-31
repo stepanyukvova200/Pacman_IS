@@ -101,11 +101,11 @@ public class GameManager : MonoBehaviour
         ghostMultiplier++;
     }
 
-    public void PelletEaten(Pellet pellet)
+    public void PelletEaten(Fruit fruit)
     {
-        pellet.gameObject.SetActive(false);
+        fruit.gameObject.SetActive(false);
 
-        SetScore(score + pellet.points);
+        SetScore(score + fruit.points);
 
         if (!HasRemainingPellets())
         {
@@ -114,15 +114,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PowerPelletEaten(PowerPellet pellet)
+    public void PowerFruitEaten(PowerFruit fruit)
     {
+        PelletEaten(fruit);
+        return;
+        
         for (int i = 0; i < ghosts.Length; i++) {
-            ghosts[i].frightened.Enable(pellet.duration);
+            ghosts[i].frightened.Enable(fruit.duration);
         }
 
-        PelletEaten(pellet);
         CancelInvoke(nameof(ResetGhostMultiplier));
-        Invoke(nameof(ResetGhostMultiplier), pellet.duration);
+        Invoke(nameof(ResetGhostMultiplier), fruit.duration);
     }
 
     private bool HasRemainingPellets()
