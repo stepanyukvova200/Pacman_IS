@@ -11,7 +11,7 @@ public abstract class GhostBehavior : MonoBehaviour
         ghost = GetComponent<Ghost>();
     }
 
-    public void Enable()
+    public virtual void Enable()
     {
         Enable(duration);
     }

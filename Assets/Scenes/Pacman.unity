@@ -511,6 +511,7 @@ MonoBehaviour:
   - {fileID: 2107185094}
   pacman: {fileID: 1575749643}
   pellets: {fileID: 1910537628}
+  algorithms: {fileID: 1742009836}
   gameOverText: {fileID: 1133529214}
   scoreText: {fileID: 1945791160}
   livesText: {fileID: 278868602}

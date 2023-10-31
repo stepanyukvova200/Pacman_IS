@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -39,9 +40,56 @@ public class Algorithms : MonoBehaviour
         EditorApplication.isPaused = true;
     }
 
+    public Vector3 GetNextMoveDirectionByAStar(Ghost ghost, Pacman pacman)
+    {
+        BuildGraph();
+        int ghostIdx = -1, pacIdx = -1;
+        if (spawnedArtificialNodes.Any(n =>
+                Mathf.Approximately(((Vector2)(n.transform.position - ghost.transform.position)).magnitude, 0)))
+        {
+            ghostIdx = nodes.IndexOf(spawnedArtificialNodes.First(n =>
+                Mathf.Approximately(((Vector2)(n.transform.position - ghost.transform.position)).magnitude, 0)));
+        }
+        
+        if (spawnedArtificialNodes.Any(n =>
+                Mathf.Approximately(((Vector2)(n.transform.position - pacman.transform.position)).magnitude, 0)))
+        {
+            pacIdx = nodes.IndexOf(spawnedArtificialNodes.First(n =>
+                Mathf.Approximately(((Vector2)(n.transform.position - pacman.transform.position)).magnitude, 0)));
+        }
+
+        if (pacIdx != -1 && ghostIdx != -1)
+        {
+            return GetNextMoveDirectionByAStar(ghostIdx, pacIdx);
+        }
+        else
+        {
+            Debug.LogError("Can't find pacman or ghost node");
+            return Vector3.zero;
+        }
+    }
+    
+    public Vector3 GetNextMoveDirectionByAStar(int startNode, int targetNode)
+    {
+        var path = AStar(startNode, targetNode);
+        if (path != null)
+        {
+            for (var i = 1; i < path.Count; i++)
+            {
+                var nextNode = path[i];
+                var dir = ((Vector3)Vector3Int.RoundToInt((nodes[nextNode].transform.position - nodes[startNode].transform.position).normalized)).normalized;
+                if (dir.sqrMagnitude == 0)
+                    continue;
+                return dir;
+            }
+        }
+
+        return Vector3.zero;
+    }
+
     private void UpdateGraph()
     {
-        nodes = FindObjectsByType<Node>(FindObjectsSortMode.InstanceID).ToList();
+        nodes = FindObjectsByType<Node>(FindObjectsSortMode.InstanceID).Where(n => n.isDestroyed == false).ToList();
         nodes = nodes.OrderBy(n => n.transform.position.x).ThenBy(n => n.transform.position.y).ToList();
     }
 
@@ -83,19 +131,24 @@ public class Algorithms : MonoBehaviour
             {
                 if (i == j) continue;
                 //take only nearest node in each direction
-                var vectorDiff = Vector3Int.RoundToInt(nodes[j].transform.position - nodes[i].transform.position);
-                var dir = ((Vector3)vectorDiff).normalized;
-                if (nodes[i].availableDirections.Contains(dir))
+                var vectorDiff = (nodes[j].transform.position - nodes[i].transform.position);
+                var dir = vectorDiff.normalized;
+                
+                if (nodes[i].availableDirections.Any(n => ((Vector3)n).EqualVector(dir)))
                 {
                     //check if node nearest in direction
-                    var foundNode =
-                        adjencyList[i].Any(nIdx =>
-                            ((Vector3)Vector3Int.RoundToInt(nodes[nIdx].transform.position - nodes[i].transform.position)).normalized == dir)
-                            ? adjencyList[i].FirstOrDefault(nIdx => ((Vector3)Vector3Int.RoundToInt(nodes[nIdx].transform.position - nodes[i].transform.position)).normalized == dir)
-                            : -1;
+                    int foundNode = -1;
+                    foreach (var nIdx in adjencyList[i])
+                    {
+                        if ((nodes[nIdx].transform.position - nodes[i].transform.position).normalized.EqualVector(dir))
+                        {
+                            foundNode = nIdx;
+                        }
+                    }
+                    
                     if (foundNode != -1)
                     {
-                        if (((Vector3)Vector3Int.RoundToInt(nodes[foundNode].transform.position - nodes[i].transform.position)).sqrMagnitude > vectorDiff.sqrMagnitude)
+                        if ((nodes[foundNode].transform.position - nodes[i].transform.position).sqrMagnitude > vectorDiff.sqrMagnitude)
                         {
                             adjencyList[i].Remove(foundNode);
                             adjencyList[i].Add(j);
@@ -126,6 +179,7 @@ public class Algorithms : MonoBehaviour
 
         foreach (var spawnedArtificialNode in spawnedArtificialNodes)
         {
+            spawnedArtificialNode.GetComponent<Collider2D>().enabled = false;
             spawnedArtificialNode.isArtificial = true;
             spawnedArtificialNode.UpdateAvailableDirections();
         }
@@ -135,7 +189,8 @@ public class Algorithms : MonoBehaviour
     {
         foreach (var spawnedArtificialNode in spawnedArtificialNodes)
         {
-            DestroyImmediate(spawnedArtificialNode.gameObject);
+            spawnedArtificialNode.isDestroyed = true;
+            Destroy(spawnedArtificialNode.gameObject);
         }
 
         spawnedArtificialNodes.Clear();

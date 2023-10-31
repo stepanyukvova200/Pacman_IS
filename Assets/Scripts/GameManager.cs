@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public Ghost[] ghosts;
     public Pacman pacman;
     public Transform pellets;
+    public Algorithms algorithms;
 
     public Text gameOverText;
     public Text scoreText;
