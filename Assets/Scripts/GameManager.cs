@@ -117,7 +117,6 @@ public class GameManager : MonoBehaviour
     public void PowerFruitEaten(PowerFruit fruit)
     {
         PelletEaten(fruit);
-        return;
         
         for (int i = 0; i < ghosts.Length; i++) {
             ghosts[i].frightened.Enable(fruit.duration);
