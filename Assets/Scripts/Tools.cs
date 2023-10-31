@@ -8,6 +8,10 @@ public static class Tools
     {
         return (lhs - rhs).sqrMagnitude <= eps * eps;
     }
+    public static bool EqualVector(this Vector2 lhs, Vector2 rhs)
+    {
+        return (lhs - rhs).sqrMagnitude <= eps * eps;
+    }
 
     public static int IndexOf<T>(this T[] array, T el)
     {

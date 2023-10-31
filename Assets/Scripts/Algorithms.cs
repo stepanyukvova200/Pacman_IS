@@ -78,12 +78,12 @@ public class Algorithms : MonoBehaviour
             {
                 var nextNode = path[i];
                 var dir = ((Vector3)Vector3Int.RoundToInt((nodes[nextNode].transform.position - nodes[startNode].transform.position).normalized)).normalized;
-                if (dir.sqrMagnitude == 0)
+                if(((Vector2)dir).EqualVector(Vector2.zero))
                     continue;
                 return dir;
             }
         }
-
+        Debug.Log("path not found");
         return Vector3.zero;
     }
 
@@ -180,6 +180,7 @@ public class Algorithms : MonoBehaviour
         foreach (var spawnedArtificialNode in spawnedArtificialNodes)
         {
             spawnedArtificialNode.GetComponent<Collider2D>().enabled = false;
+            spawnedArtificialNode.GetComponent<SpriteRenderer>().enabled = false;
             spawnedArtificialNode.isArtificial = true;
             spawnedArtificialNode.UpdateAvailableDirections();
         }

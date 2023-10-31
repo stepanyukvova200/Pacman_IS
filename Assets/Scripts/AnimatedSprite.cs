@@ -5,7 +5,7 @@ public class AnimatedSprite : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer { get; private set; }
     public Sprite[] sprites = new Sprite[0];
-    public float animationTime = 0.25f;
+    public float animationTime = 0.1f;
     public int animationFrame { get; private set; }
     public bool loop = true;
 
